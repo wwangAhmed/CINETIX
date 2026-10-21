@@ -1,0 +1,10 @@
+{
+  "description": "Streamline cinema ticket booking with responsive design, interactive seat selection, food add-ons, secure payment, and instant QR code confirmation.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
