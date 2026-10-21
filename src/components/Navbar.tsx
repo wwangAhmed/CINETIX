@@ -22,9 +22,9 @@ export default function Navbar({ currentPage, navigate }: NavbarProps) {
 
   const links: { label: string; page: Page; badge?: string }[] = [
     { label: 'Home', page: 'home' },
-    { label: 'Movies', page: 'movie-detail' },
-    { label: 'Offers', page: 'offers' },
-    { label: 'Design System', page: 'design-system', badge: 'GUIDE' },
+    { label: 'Now Showing', page: 'movie-detail' },
+    { label: 'Offers & Perks', page: 'offers' },
+    { label: 'Food & Drinks', page: 'food' },
     { label: 'Contact', page: 'contact' },
   ];
 

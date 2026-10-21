@@ -159,7 +159,7 @@ export default function Payment({ movie, bookingState, navigate }: Props) {
     }
 
     if (selectedMethod === 'paypal') {
-      setProcessingMsg('CONNECTING TO PAYPAL ENCRYPTED VAULT...');
+      setProcessingMsg('CONNECTING TO PAYPAL SECURE CHECKOUT...');
       setProcessing(true);
       setTimeout(() => {
         completePayment('PayPal Express (Verified)');
@@ -243,10 +243,10 @@ export default function Payment({ movie, bookingState, navigate }: Props) {
             <span style={{ fontSize: 20 }}>🔒</span>
             <div>
               <p style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 700, margin: 0 }}>
-                SEATS RESERVED IN ENCRYPTED VAULT
+                SEATS HELD FOR YOUR ORDER
               </p>
               <p style={{ color: '#C7BFB5', fontSize: 11, margin: 0 }}>
-                Seats {seats.join(', ')} are cryptographically locked to prevent double-booking.
+                Seats {seats.join(', ')} are temporarily reserved for you while you check out.
               </p>
             </div>
           </div>
@@ -278,7 +278,7 @@ export default function Payment({ movie, bookingState, navigate }: Props) {
               }}
             >
               <span>🛡️</span>
-              <span>Vault Verified</span>
+              <span>Verified Secure</span>
             </button>
           </div>
         </div>

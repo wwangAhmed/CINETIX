@@ -392,7 +392,7 @@ export default function Register({ navigate }: Props) {
                   boxShadow: '0 4px 14px rgba(255, 157, 22, 0.35)',
                 }}
               >
-                {submitting ? 'SECURING 256-BIT VAULT ACCOUNT...' : 'CLAIM VIP MEMBERSHIP & REGISTER →'}
+                {submitting ? 'CREATING YOUR VIP ACCOUNT...' : 'CLAIM VIP MEMBERSHIP & REGISTER →'}
               </button>
 
               {/* Security Shield Indicator */}
@@ -411,7 +411,7 @@ export default function Register({ navigate }: Props) {
               >
                 <span>🛡️</span>
                 <span>Protected by 256-Bit TLS & PCI-DSS Tokenization</span>
-                <span style={{ color: '#FF9D16', textDecoration: 'underline' }}>View Vault</span>
+                <span style={{ color: '#FF9D16', textDecoration: 'underline' }}>Security Details</span>
               </div>
 
               {/* Login link */}

@@ -361,7 +361,7 @@ export default function Profile({ navigate }: Props) {
         {/* Quick Menu Options */}
         <div style={{ background: '#24221F', borderRadius: 18, border: '1px solid #665946', overflow: 'hidden' }}>
           {[
-            { icon: '🎨', label: 'Cinetix Design System & Guidelines', action: () => navigate('design-system') },
+            { icon: '🍿', label: 'Pre-Order Concessions & Dining', action: () => navigate('food') },
             { icon: '🎁', label: 'My Vouchers & Promo Codes', action: () => navigate('offers') },
             { icon: '💳', label: 'Saved Payment Methods', action: () => alert('Visa ending in •••• 4242 is primary.') },
             { icon: '📞', label: 'VIP Concierge & Help Desk', action: () => navigate('contact') },

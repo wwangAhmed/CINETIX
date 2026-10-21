@@ -9,7 +9,7 @@ const tabs = [
   { icon: '🏠', label: 'Home', page: 'home' as Page },
   { icon: '🎬', label: 'Movies', page: 'movie-detail' as Page },
   { icon: '🎁', label: 'Offers', page: 'offers' as Page },
-  { icon: '🎨', label: 'Design', page: 'design-system' as Page },
+  { icon: '🍿', label: 'Food', page: 'food' as Page },
   { icon: '👤', label: 'Profile', page: 'profile' as Page },
 ];
 

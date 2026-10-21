@@ -910,13 +910,13 @@ export default function Home({ movie, navigate }: Props) {
                   marginBottom: 6,
                 }}
               >
-                PROPRIETARY 0.4s FAST CHECKOUT
+                PROPRIETARY FAST CHECKOUT
               </span>
               <h3 style={{ fontFamily: 'Bebas Neue', fontSize: 28, letterSpacing: '0.04em', color: '#FFFFFF', margin: 0 }}>
                 ORDER IT QUICK — NEVER WAIT IN A CINEMA QUEUE
               </h3>
               <p style={{ color: '#C7BFB5', fontSize: 13, marginTop: 4, lineHeight: 1.5 }}>
-                Our seating engine identifies the acoustically optimal prime seats in rows E and F, locks them in a 256-bit vault, and creates your touchless QR pass in a single tap.
+                Our booking system selects the best center seats in rows E and F and creates your digital QR ticket pass in seconds.
               </p>
             </div>
           </div>
@@ -1105,7 +1105,7 @@ export default function Home({ movie, navigate }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 20 }}>🛡️</span>
             <div>
-              <p style={{ color: '#FFFFFF', fontWeight: 700, margin: 0 }}>256-Bit TLS Vault</p>
+              <p style={{ color: '#FFFFFF', fontWeight: 700, margin: 0 }}>Bank-Grade 256-Bit SSL</p>
               <p style={{ margin: 0, fontSize: 11 }}>PCI-DSS Level 1 Encrypted</p>
             </div>
           </div>

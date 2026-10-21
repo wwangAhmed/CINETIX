@@ -28,20 +28,19 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
 import ComingSoon from './pages/ComingSoon';
 import Trending from './pages/Trending';
-import DesignSystem from './pages/DesignSystem';
 
 const NAVBAR_PAGES: Page[] = [
   'home', 'movie-detail', 'search', 'offers', 'profile', 'about', 'contact',
-  'privacy', 'terms', 'coming-soon', 'trending', 'design-system',
+  'privacy', 'terms', 'coming-soon', 'trending',
 ];
 const FOOTER_PAGES: Page[] = [
   'home', 'movie-detail', 'search', 'offers', 'about', 'contact',
-  'privacy', 'terms', 'design-system',
+  'privacy', 'terms',
 ];
 const BOTTOM_TAB_PAGES: Page[] = [
   'home', 'movie-detail', 'search', 'offers', 'profile', 'about',
   'contact', 'privacy', 'terms', 'coming-soon', 'trending', 'food',
-  'payment', 'design-system',
+  'payment',
 ];
 
 const defaultBookingState: BookingState = {
@@ -144,7 +143,6 @@ export default function App() {
         {currentPage === 'terms' && <Terms navigate={navigate} />}
         {currentPage === 'coming-soon' && <ComingSoon navigate={navigate} />}
         {currentPage === 'trending' && <Trending navigate={navigate} />}
-        {currentPage === 'design-system' && <DesignSystem navigate={navigate} />}
       </main>
 
       {showFooter && <Footer navigate={navigate} />}

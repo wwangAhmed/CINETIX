@@ -209,7 +209,7 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
             </div>
             <DynamicQRCode data={qrData} size={165} showScanBeam={true} />
             <p style={{ color: '#FF9D16', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em' }}>
-              ● GATE TURNSTILE & PODIUM SCANNER READY
+              ● READY TO SCAN AT THEATER ENTRANCE
             </p>
             <p style={{ color: '#C7BFB5', fontSize: 11 }}>
               Present this QR code on your mobile or download high-res pass below

@@ -2,7 +2,7 @@ export type Page =
   | 'login' | 'register' | 'otp' | 'home' | 'movie-detail' | 'booking' | 'seat-selection'
   | 'order-it-quick' | 'food' | 'payment' | 'qr-payment' | 'confirmed' | 'quick-confirmed'
   | 'search' | 'offers' | 'profile' | 'edit-profile' | 'about' | 'contact'
-  | 'privacy' | 'terms' | 'coming-soon' | 'trending' | 'design-system';
+  | 'privacy' | 'terms' | 'coming-soon' | 'trending';
 
 export interface CastMember {
   name: string;

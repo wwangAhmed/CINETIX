@@ -271,7 +271,7 @@ export default function Confirmed({ movie, bookingState, navigate, addBooking }:
                     GATE READY · VERIFIED
                   </span>
                   <p style={{ color: '#C7BFB5', fontSize: 12, marginTop: 6 }}>
-                    Scan QR at the IMAX podium for rapid touchless entry.
+                    Scan QR code at the cinema entrance for fast ticketless entry.
                   </p>
                   <p style={{ color: '#FF9D16', fontSize: 11, fontWeight: 600, marginTop: 4 }}>
                     Method: {bookingState.paymentMethod || 'Credit Card'}

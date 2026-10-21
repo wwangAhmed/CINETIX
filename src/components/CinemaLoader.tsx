@@ -6,11 +6,11 @@ interface Props {
 }
 
 const CINEMA_STATUSES = [
-  'INITIALIZING 4K DCI LASER PROJECTION',
-  'CALIBRATING 64-CHANNEL DOLBY ATMOS',
-  'SYNCHRONIZING THEATRE SEATING MATRIX',
-  'SECURING 256-BIT ENCRYPTED VAULT',
-  'LOADING CINETIX IMAX EXPERIENCE',
+  'PREPARING YOUR TICKETS...',
+  'RESERVING BEST SEATS...',
+  'PREPARING CINEMA PASS...',
+  'FINALIZING SECURE ORDER...',
+  'ENJOY THE SHOW AT CINETIX!',
 ];
 
 export default function CinemaLoader({ message, fullScreen = true }: Props) {
@@ -147,7 +147,7 @@ export default function CinemaLoader({ message, fullScreen = true }: Props) {
 
       {/* Sound & Security Badge */}
       <p style={{ color: '#665946', fontSize: 10, letterSpacing: '0.12em', marginTop: 14 }}>
-        DOLBY ATMOS · 4K LASER · 256-BIT ENCRYPTED
+        DOLBY ATMOS · 4K LASER · 256-BIT SECURE CHECKOUT
       </p>
 
       <style>{`

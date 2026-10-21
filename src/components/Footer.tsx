@@ -116,7 +116,7 @@ export default function Footer({ navigate }: FooterProps) {
                 { l: 'Featured Movies', p: 'home' as Page },
                 { l: 'Now Showing & Trailers', p: 'movie-detail' as Page },
                 { l: 'Exclusive Offers', p: 'offers' as Page },
-                { l: 'Design System & Guidelines', p: 'design-system' as Page },
+                { l: 'Food & Drinks Menu', p: 'food' as Page },
                 { l: 'About Cinetix', p: 'about' as Page },
               ].map((item) => (
                 <button

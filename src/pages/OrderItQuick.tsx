@@ -471,7 +471,7 @@ export default function OrderItQuick({ movie, navigate }: Props) {
                 </h1>
               </div>
               <p style={{ color: '#FF9D16', fontSize: 12, fontWeight: 700, margin: '2px 0 0' }}>
-                Zero Queues · Acoustically Optimal Prime Seats Auto-Reserved in 0.4s
+                Skip the Line · Best Center Recliner Seats Auto-Reserved
               </p>
             </div>
           </div>
@@ -697,7 +697,7 @@ export default function OrderItQuick({ movie, navigate }: Props) {
                 STEP 5: GUEST COUNT & SMART SEAT ALLOCATION
               </span>
               <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 700 }}>
-                ● Real-time Acoustic Engine
+                ● Best View Center Seats Selected
               </span>
             </div>
 
@@ -946,7 +946,7 @@ export default function OrderItQuick({ movie, navigate }: Props) {
             <div style={{ borderTop: '1px solid #3A3731', paddingTop: 12, marginTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <span style={{ color: '#FFFFFF', fontWeight: 700, fontSize: 16, display: 'block' }}>Total Payable</span>
-                <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 700 }}>● 256-Bit Cryptographically Locked</span>
+                <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 700 }}>● Instant Reservation Confirmed</span>
               </div>
               <span style={{ color: '#FF9D16', fontWeight: 900, fontSize: 28, fontFamily: 'Inter' }}>
                 ${total}.00

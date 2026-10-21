@@ -179,7 +179,7 @@ export default function QRPayment({ bookingState, navigate }: Props) {
               }}
             />
             <p style={{ color: '#FF9D16', fontWeight: 700, fontSize: 14 }}>
-              Verifying Mobile Cryptographic Signature...
+              Verifying Mobile Payment Authorization...
             </p>
           </div>
         )}
