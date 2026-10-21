@@ -5,7 +5,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import QuickBookingBar from './components/QuickBookingBar';
 import BottomTabBar from './components/BottomTabBar';
+import CinemaLoader from './components/CinemaLoader';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Otp from './pages/Otp';
 import Home from './pages/Home';
 import MovieDetail from './pages/MovieDetail';
@@ -114,6 +116,7 @@ export default function App() {
         }}
       >
         {currentPage === 'login' && <Login navigate={navigate} />}
+        {currentPage === 'register' && <Register navigate={navigate} />}
         {currentPage === 'otp' && <Otp navigate={navigate} />}
         {currentPage === 'home' && (
           <>

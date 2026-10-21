@@ -147,7 +147,7 @@ export default function Login({ navigate }: Props) {
           <p style={{ color: '#C7BFB5', fontSize: 13, textAlign: 'center' }}>
             New to Cinetix?{' '}
             <button
-              onClick={() => navigate('otp')}
+              onClick={() => navigate('register')}
               style={{ color: '#FF9D16', fontWeight: 700, background: 'none' }}
             >
               Register VIP Account

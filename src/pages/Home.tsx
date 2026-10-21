@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Movie, Page } from '../types';
 import { db } from '../db/database';
+import { downloadAssetImage } from '../utils/downloadPass';
 
 interface Props {
   movie: Movie;
@@ -278,6 +279,30 @@ export default function Home({ movie, navigate }: Props) {
                 }}
               >
                 ⚡ 1-TAP QUICK BOOK
+              </button>
+
+              <button
+                onClick={() =>
+                  downloadAssetImage(slide.backdrop, `${slide.title.replace(/\s+/g, '_')}_4K_Wallpaper.jpg`)
+                }
+                style={{
+                  background: '#24221F',
+                  border: '1px solid #665946',
+                  color: '#C7BFB5',
+                  borderRadius: 10,
+                  padding: '12px 18px',
+                  fontFamily: 'Inter',
+                  fontWeight: 600,
+                  fontSize: 13,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  cursor: 'pointer',
+                }}
+                title="Download 4K Cinematic Wallpaper"
+              >
+                <span>📥</span>
+                <span>4K Wallpaper</span>
               </button>
             </div>
           </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Page, BookingState } from '../types';
 import DynamicQRCode from '../components/DynamicQRCode';
-import { db } from '../db/database';
 
 interface Props {
   bookingState?: BookingState;
@@ -10,13 +9,11 @@ interface Props {
 
 export default function QRPayment({ bookingState, navigate }: Props) {
   const [timer, setTimer] = useState(300);
-  const [copiedUpi, setCopiedUpi] = useState(false);
   const [status, setStatus] = useState<'waiting' | 'verifying' | 'success'>('waiting');
 
   const total = bookingState?.totalAmount || 140;
   const rawRef = useRef(`CTX-${Math.floor(1000 + Math.random() * 9000)}`);
-  const upiId = 'cinetix.theatres@hdfcbank';
-  const qrPayload = `upi://pay?pa=${upiId}&pn=Cinetix%20Cinemas&am=${total}.00&cu=USD&tn=Cinetix%20Ticket%20${rawRef.current}`;
+  const qrPayload = `https://cinetix.cinema/checkout/express?ref=${rawRef.current}&amt=${total}&cur=USD&sec=tls256`;
 
   useEffect(() => {
     if (timer <= 0) {
@@ -30,12 +27,6 @@ export default function QRPayment({ bookingState, navigate }: Props) {
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;
 
-  const handleCopyUpi = () => {
-    navigator.clipboard?.writeText(upiId);
-    setCopiedUpi(true);
-    setTimeout(() => setCopiedUpi(false), 2500);
-  };
-
   const handleConfirmPaid = () => {
     setStatus('verifying');
     setTimeout(() => {
@@ -43,7 +34,7 @@ export default function QRPayment({ bookingState, navigate }: Props) {
       setTimeout(() => {
         navigate('confirmed', {
           totalAmount: total,
-          paymentMethod: 'UPI Instant Scan (Auto-Verified)',
+          paymentMethod: 'Express Mobile QR (Apple / Google Wallet)',
           bookingRef: rawRef.current,
         });
       }, 900);
@@ -84,10 +75,10 @@ export default function QRPayment({ bookingState, navigate }: Props) {
             marginBottom: 4,
           }}
         >
-          SCAN DYNAMIC PAYMENT QR
+          SCAN EXPRESS PAYMENT QR
         </h2>
         <p style={{ color: '#C7BFB5', fontSize: 13, marginBottom: 20 }}>
-          Open Google Pay, PhonePe, Paytm, or any UPI app to authorize <strong>${total}.00</strong>
+          Open your phone camera, Apple Wallet, or PayPal app to authorize <strong>${total}.00</strong>
         </p>
 
         {/* Dynamic QR Code */}
@@ -107,7 +98,7 @@ export default function QRPayment({ bookingState, navigate }: Props) {
           }}
         >
           <p style={{ color: '#99784B', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>
-            QR Code Expires In
+            Token Expires In
           </p>
           <p
             style={{
@@ -122,92 +113,85 @@ export default function QRPayment({ bookingState, navigate }: Props) {
           </p>
         </div>
 
-        {/* UPI ID copy */}
+        {/* Compatible Wallets */}
         <div
           style={{
             background: '#1D1C19',
-            border: '1px solid #4D473F',
+            border: '1px solid #33312D',
             borderRadius: 10,
             padding: '10px 14px',
             marginBottom: 20,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
+            color: '#C7BFB5',
+            fontSize: 12,
+            fontWeight: 700,
           }}
         >
-          <div style={{ textAlign: 'left' }}>
-            <p style={{ color: '#99784B', fontSize: 10, fontWeight: 600 }}>UPI VPA</p>
-            <p style={{ color: '#FFFFFF', fontSize: 13, fontWeight: 600 }}>{upiId}</p>
+          <span> Apple Wallet</span>
+          <span style={{ color: '#4D473F' }}>•</span>
+          <span>Google Wallet</span>
+          <span style={{ color: '#4D473F' }}>•</span>
+          <span>PayPal</span>
+        </div>
+
+        {/* Verification Status */}
+        {status === 'waiting' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <button
+              onClick={handleConfirmPaid}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
+                color: '#181715',
+                borderRadius: 12,
+                padding: 14,
+                fontFamily: 'Bebas Neue',
+                letterSpacing: '0.06em',
+                fontSize: 19,
+                boxShadow: '0 4px 16px rgba(255, 157, 22, 0.4)',
+                cursor: 'pointer',
+              }}
+            >
+              SIMULATE SCAN & CONFIRM PAYMENT ✓
+            </button>
+            <button
+              onClick={() => navigate('payment')}
+              style={{ color: '#C7BFB5', fontSize: 13, background: 'none' }}
+            >
+              ← Choose another payment method
+            </button>
           </div>
-          <button
-            onClick={handleCopyUpi}
-            style={{
-              background: '#33312D',
-              border: '1px solid #665946',
-              color: '#FF9D16',
-              borderRadius: 6,
-              padding: '6px 12px',
-              fontSize: 11,
-              fontWeight: 700,
-            }}
-          >
-            {copiedUpi ? 'COPIED! ✓' : 'COPY'}
-          </button>
-        </div>
+        )}
 
-        {/* Security badge */}
-        <div
-          style={{
-            background: 'rgba(34, 197, 94, 0.1)',
-            border: '1px solid rgba(34, 197, 94, 0.3)',
-            borderRadius: 8,
-            padding: '8px 14px',
-            marginBottom: 20,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-          }}
-        >
-          <span style={{ color: '#22C55E', fontSize: 14 }}>🔒</span>
-          <span style={{ color: '#22C55E', fontWeight: 600, fontSize: 12 }}>
-            Secured by Cinetix Instant FastPay
-          </span>
-        </div>
+        {status === 'verifying' && (
+          <div style={{ padding: '10px 0' }}>
+            <div
+              style={{
+                width: 24,
+                height: 24,
+                border: '3px solid #665946',
+                borderTopColor: '#FF9D16',
+                borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite',
+                margin: '0 auto 10px',
+              }}
+            />
+            <p style={{ color: '#FF9D16', fontWeight: 700, fontSize: 14 }}>
+              Verifying Mobile Cryptographic Signature...
+            </p>
+          </div>
+        )}
 
-        {/* Actions */}
-        <button
-          onClick={handleConfirmPaid}
-          disabled={status !== 'waiting'}
-          style={{
-            width: '100%',
-            background: status === 'success'
-              ? '#22C55E'
-              : 'linear-gradient(135deg, #FF9D16, #CC903B)',
-            color: '#181715',
-            borderRadius: 12,
-            padding: 14,
-            fontFamily: 'Bebas Neue',
-            letterSpacing: '0.06em',
-            fontSize: 20,
-            marginBottom: 10,
-            boxShadow: '0 4px 16px rgba(255, 157, 22, 0.35)',
-            cursor: status === 'waiting' ? 'pointer' : 'wait',
-          }}
-        >
-          {status === 'verifying'
-            ? 'VERIFYING BANK CLEARANCE...'
-            : status === 'success'
-            ? '✓ PAYMENT CONFIRMED!'
-            : `I HAVE COMPLETED PAYMENT ($${total}.00) →`}
-        </button>
-
-        <button
-          onClick={() => navigate('payment')}
-          style={{ background: 'none', color: '#C7BFB5', fontSize: 13, border: 'none' }}
-        >
-          ← Choose another payment option
-        </button>
+        {status === 'success' && (
+          <div style={{ padding: '10px 0' }}>
+            <span style={{ color: '#22C55E', fontSize: 24 }}>✓</span>
+            <p style={{ color: '#22C55E', fontWeight: 800, fontSize: 16 }}>
+              Payment Authorized! Generating Gate Pass...
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

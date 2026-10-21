@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { downloadQRCodePNG } from '../utils/downloadPass';
 
 interface Props {
   data: string;
@@ -6,6 +7,7 @@ interface Props {
   fgColor?: string;
   bgColor?: string;
   showScanBeam?: boolean;
+  allowDownload?: boolean;
 }
 
 // Deterministic matrix generator for ticket data
@@ -19,8 +21,8 @@ function generateMatrix(text: string, dimension = 25): boolean[][] {
     for (let r = 0; r < 7; r++) {
       for (let c = 0; c < 7; c++) {
         if (
-          r === 0 || r === 6 || c === 0 || c === 6 || // Outer ring
-          (r >= 2 && r <= 4 && c >= 2 && c <= 4)      // Inner solid square
+          r === 0 || r === 6 || c === 0 || c === 6 ||
+          (r >= 2 && r <= 4 && c >= 2 && c <= 4)
         ) {
           matrix[rowStart + r][colStart + c] = true;
         } else {
@@ -51,7 +53,6 @@ function generateMatrix(text: string, dimension = 25): boolean[][] {
   // Pseudo-random data filling
   for (let r = 0; r < dimension; r++) {
     for (let c = 0; c < dimension; c++) {
-      // Don't overwrite finders or timing
       const inTopLeft = r < 8 && c < 8;
       const inTopRight = r < 8 && c >= dimension - 8;
       const inBottomLeft = r >= dimension - 8 && c < 8;
@@ -74,10 +75,22 @@ export default function DynamicQRCode({
   fgColor = '#181715',
   bgColor = '#FFFFFF',
   showScanBeam = false,
+  allowDownload = true,
 }: Props) {
   const dimension = 25;
   const matrix = useMemo(() => generateMatrix(data, dimension), [data]);
   const cellSize = size / dimension;
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDownloading(true);
+    try {
+      await downloadQRCodePNG(data, 'cinetix-gate-qr.png');
+    } finally {
+      setTimeout(() => setDownloading(false), 1200);
+    }
+  };
 
   return (
     <div
@@ -92,6 +105,8 @@ export default function DynamicQRCode({
         boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
         display: 'inline-block',
       }}
+      className="group"
+      title={allowDownload ? "Click to download QR code" : undefined}
     >
       <svg
         width={size - 16}
@@ -101,7 +116,6 @@ export default function DynamicQRCode({
       >
         {matrix.map((row, r) =>
           row.map((active, c) => {
-            // Keep center badge clear for Cinetix icon
             if (r >= 10 && r <= 14 && c >= 10 && c <= 14) return null;
             if (!active) return null;
             return (
@@ -153,6 +167,34 @@ export default function DynamicQRCode({
             animation: 'scanAnimation 2.2s ease-in-out infinite alternate',
           }}
         />
+      )}
+
+      {/* Floating Download Button on hover */}
+      {allowDownload && (
+        <button
+          onClick={handleDownload}
+          style={{
+            position: 'absolute',
+            bottom: 4,
+            right: 4,
+            background: 'rgba(24, 23, 21, 0.85)',
+            border: '1px solid #FF9D16',
+            color: '#FF9D16',
+            borderRadius: 6,
+            padding: '2px 6px',
+            fontSize: 9,
+            fontWeight: 800,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            transition: 'all 0.2s ease',
+          }}
+          title="Download QR code as PNG image"
+        >
+          <span>📥</span>
+          <span>{downloading ? '✓' : 'PNG'}</span>
+        </button>
       )}
 
       <style>{`

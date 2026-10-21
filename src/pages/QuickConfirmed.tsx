@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { Movie, Page } from '../types';
 import DynamicQRCode from '../components/DynamicQRCode';
 import { db } from '../db/database';
+import { downloadTicketPassImage, downloadQRCodePNG } from '../utils/downloadPass';
 
 interface Props {
   movie: Movie;
@@ -12,6 +14,32 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
   const refCode = latestBooking?.bookingRef || 'CTX-QUICK-98';
   const seats = latestBooking?.seats || ['E4', 'E5'];
   const total = latestBooking?.total || 75;
+  const qrData = latestBooking?.qrData || `CINETIX|${refCode}|${movie.title}|${seats.join(',')}|TOTAL:$${total}|PASS_VALID`;
+
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+
+  const handleDownloadPass = async () => {
+    setDownloading(true);
+    try {
+      await downloadTicketPassImage({
+        movieTitle: latestBooking?.movieTitle || movie.title,
+        theaterName: latestBooking?.theaterName || 'Cinetix Grand IMAX Downtown',
+        date: latestBooking?.date || 'Today',
+        time: latestBooking?.time || '08:00 PM',
+        format: latestBooking?.format || 'IMAX 3D',
+        seats,
+        total,
+        bookingRef: refCode,
+        qrData,
+      });
+      setDownloaded(true);
+    } catch {
+      window.print();
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div
@@ -27,8 +55,8 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
       <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
 
         {/* Dynamic Gen Z Header */}
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ fontSize: 56, marginBottom: 8 }}>⚡</div>
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontSize: 52, marginBottom: 8 }}>⚡</div>
           <h1
             style={{
               fontFamily: 'Bebas Neue',
@@ -46,14 +74,14 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
               background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
               borderRadius: 20,
               padding: '6px 18px',
-              marginBottom: 12,
+              marginBottom: 10,
             }}
           >
-            <span style={{ color: '#181715', fontWeight: 800, fontSize: 14 }}>
-              Secured your prime seats in 0.4s ⚡
+            <span style={{ color: '#181715', fontWeight: 800, fontSize: 13 }}>
+              Secured prime seats in 0.4s with 256-Bit Vault ⚡
             </span>
           </div>
-          <p style={{ color: '#C7BFB5', fontSize: 14 }}>
+          <p style={{ color: '#C7BFB5', fontSize: 13 }}>
             Booking Reference: <strong style={{ color: '#FF9D16' }}>{refCode}</strong>
           </p>
         </div>
@@ -65,7 +93,7 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             borderRadius: 20,
             padding: 24,
             border: '1px solid #665946',
-            marginBottom: 24,
+            marginBottom: 20,
             boxShadow: '0 12px 36px rgba(0,0,0,0.6)',
           }}
         >
@@ -149,51 +177,17 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
               gap: 8,
             }}
           >
-            <DynamicQRCode
-              data={`CINETIX|${refCode}|${movie.title}|${seats.join(',')}|TOTAL:$${total}|PASS_VALID`}
-              size={130}
-              showScanBeam={true}
-            />
+            <DynamicQRCode data={qrData} size={135} showScanBeam={true} />
             <p style={{ color: '#99784B', fontSize: 10, letterSpacing: 2, textTransform: 'uppercase' }}>
               GATE ENTRY BARCODE & QR READY
             </p>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <button
-            onClick={() => navigate('profile')}
-            style={{
-              background: '#33312D',
-              border: '1px solid #665946',
-              color: '#FF9D16',
-              borderRadius: 12,
-              padding: '13px',
-              fontWeight: 700,
-              fontSize: 14,
-            }}
-          >
-            🎟 View in Profile
-          </button>
-          <button
-            onClick={() => window.print()}
-            style={{
-              background: '#33312D',
-              border: '1px solid #665946',
-              color: '#FFFFFF',
-              borderRadius: 12,
-              padding: '13px',
-              fontWeight: 700,
-              fontSize: 14,
-            }}
-          >
-            📥 Save Pass
-          </button>
-        </div>
-
+        {/* Primary Download Pass Button */}
         <button
-          onClick={() => navigate('home')}
+          onClick={handleDownloadPass}
+          disabled={downloading}
           style={{
             width: '100%',
             background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
@@ -203,9 +197,64 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             fontFamily: 'Bebas Neue',
             letterSpacing: '0.06em',
             fontSize: 20,
+            marginBottom: 12,
+            cursor: downloading ? 'wait' : 'pointer',
+            boxShadow: '0 4px 16px rgba(255, 157, 22, 0.4)',
           }}
         >
-          BACK TO HOME →
+          {downloading ? 'GENERATING HIGH-RES PASS...' : downloaded ? 'PASS SAVED TO DOWNLOADS ✓' : '📥 DOWNLOAD DIGITAL PASS (PNG) →'}
+        </button>
+
+        {/* Secondary Actions */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <button
+            onClick={() => downloadQRCodePNG(qrData, `cinetix-qr-${refCode}.png`)}
+            style={{
+              background: '#33312D',
+              border: '1px solid #665946',
+              color: '#FF9D16',
+              borderRadius: 12,
+              padding: '12px',
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer',
+            }}
+          >
+            ⚡ Save QR (PNG)
+          </button>
+          <button
+            onClick={() => window.print()}
+            style={{
+              background: '#33312D',
+              border: '1px solid #665946',
+              color: '#FFFFFF',
+              borderRadius: 12,
+              padding: '12px',
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: 'pointer',
+            }}
+          >
+            🖨️ Print / PDF
+          </button>
+        </div>
+
+        <button
+          onClick={() => navigate('home')}
+          style={{
+            width: '100%',
+            background: '#24221F',
+            border: '1px solid #665946',
+            color: '#C7BFB5',
+            borderRadius: 12,
+            padding: 12,
+            fontFamily: 'Inter',
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: 'pointer',
+          }}
+        >
+          Done & Return to Cinema Home →
         </button>
       </div>
     </div>

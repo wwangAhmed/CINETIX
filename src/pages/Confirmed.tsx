@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Movie, Page, BookingState, BookingRecord } from '../types';
 import DynamicQRCode from '../components/DynamicQRCode';
 import { db } from '../db/database';
+import { downloadTicketPassImage, downloadQRCodePNG } from '../utils/downloadPass';
 
 interface Props {
   movie: Movie;
@@ -49,13 +50,35 @@ export default function Confirmed({ movie, bookingState, navigate, addBooking }:
     addBooking(record);
   }, []);
 
-  const handleDownload = () => {
+  const handleDownloadTicketImage = async () => {
     setDownloading(true);
-    setTimeout(() => {
-      setDownloading(false);
+    try {
+      await downloadTicketPassImage({
+        movieTitle: bookingState.movieTitle || movie.title,
+        theaterName: bookingState.theaterName || 'Cinetix Grand IMAX Downtown',
+        date: bookingState.date || 'Today',
+        time: showtime?.time || '08:00 PM',
+        format: showtime?.format || 'IMAX 3D',
+        seats,
+        total,
+        bookingRef: createdBooking?.bookingRef || bookingRef.current,
+        qrData,
+      });
       setDownloaded(true);
+    } catch (e) {
+      console.error('Error generating pass:', e);
       window.print();
-    }, 1200);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDownloadQR = async () => {
+    await downloadQRCodePNG(qrData, `cinetix-qr-${bookingRef.current}.png`);
   };
 
   const handleAddToWallet = () => {
@@ -326,9 +349,32 @@ export default function Confirmed({ movie, bookingState, navigate, addBooking }:
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           <button
-            onClick={handleDownload}
+            onClick={handleDownloadTicketImage}
+            disabled={downloading}
+            style={{
+              background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
+              color: '#181715',
+              borderRadius: 12,
+              padding: '14px',
+              fontFamily: 'Bebas Neue',
+              letterSpacing: '0.05em',
+              fontSize: 19,
+              cursor: downloading ? 'wait' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              boxShadow: '0 4px 16px rgba(255, 157, 22, 0.4)',
+            }}
+          >
+            <span>📥</span>
+            <span>{downloading ? 'GENERATING HIGH-RES PASS...' : downloaded ? 'PASS SAVED TO DOWNLOADS ✓' : 'DOWNLOAD TICKET PASS (PNG)'}</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
             style={{
               background: '#33312D',
               border: '1px solid #FF9D16',
@@ -345,30 +391,54 @@ export default function Confirmed({ movie, bookingState, navigate, addBooking }:
               gap: 8,
             }}
           >
-            <span>📥</span>
-            <span>{downloading ? 'PRINTING PASS...' : downloaded ? 'PRINTED / SAVED ✓' : 'PRINT / SAVE PDF PASS'}</span>
+            <span>🖨️</span>
+            <span>PRINT TICKET / SAVE PDF</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+          <button
+            onClick={handleDownloadQR}
+            style={{
+              background: '#24221F',
+              border: '1px solid #665946',
+              color: '#C7BFB5',
+              borderRadius: 12,
+              padding: '11px',
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: 13,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+            }}
+          >
+            <span>⚡</span>
+            <span>Download Standalone QR (PNG)</span>
           </button>
 
           <button
             onClick={handleAddToWallet}
             style={{
-              background: '#33312D',
+              background: '#24221F',
               border: '1px solid #665946',
-              color: '#FFFFFF',
+              color: '#C7BFB5',
               borderRadius: 12,
-              padding: '14px',
-              fontFamily: 'Bebas Neue',
-              letterSpacing: '0.05em',
-              fontSize: 18,
+              padding: '11px',
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: 13,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 8,
+              gap: 6,
             }}
           >
             <span>📱</span>
-            <span>{walletAdded ? 'ADDED TO WALLET ✓' : 'ADD TO APPLE / GOOGLE WALLET'}</span>
+            <span>{walletAdded ? 'Added to Wallet ✓' : 'Add to Apple / Google Wallet'}</span>
           </button>
         </div>
 

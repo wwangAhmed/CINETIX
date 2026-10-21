@@ -534,6 +534,20 @@ class CinetixDatabase {
     return this.state.userProfile;
   }
 
+  public registerUser(data: { name: string; email: string; phone?: string; preferredFormat?: string }): UserProfile {
+    this.state.userProfile = {
+      name: data.name.trim(),
+      email: data.email.trim().toLowerCase(),
+      phone: data.phone?.trim() || '+1 (555) 019-2834',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop',
+      membershipTier: 'Black VIP',
+      rewardPoints: 500, // 500 Welcome Bonus VIP points
+      walletBalance: 25, // $25 Welcome credit
+    };
+    this.save();
+    return this.state.userProfile;
+  }
+
   public validatePromo(code: string, currentTotal: number): { valid: boolean; discount: number; message: string } {
     const upper = code.trim().toUpperCase();
     const offer = this.state.offers.find(o => o.code === upper);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Page } from '../types';
 import CinetixLogo from './CinetixLogo';
 import { db } from '../db/database';
+import SecurityModal from './SecurityModal';
 
 interface NavbarProps {
   currentPage: Page;
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export default function Navbar({ currentPage, navigate }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [securityModalOpen, setSecurityModalOpen] = useState(false);
   const [user, setUser] = useState(db.getUserProfile());
 
   useEffect(() => {
@@ -101,6 +103,28 @@ export default function Navbar({ currentPage, navigate }: NavbarProps) {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
+            {/* 256-Bit SSL Security Badge */}
+            <div
+              onClick={() => setSecurityModalOpen(true)}
+              style={{
+                background: 'rgba(34, 197, 94, 0.1)',
+                border: '1px solid #22C55E',
+                borderRadius: 20,
+                padding: '4px 10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              title="Click to view Security Vault verification"
+            >
+              <span style={{ fontSize: 11 }}>🔒</span>
+              <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 700, fontFamily: 'Inter' }}>
+                256-Bit TLS
+              </span>
+            </div>
+
             {/* VIP Loyalty Points pill */}
             <div
               onClick={() => navigate('profile')}
@@ -150,26 +174,44 @@ export default function Navbar({ currentPage, navigate }: NavbarProps) {
             <button
               onClick={() => navigate('login')}
               style={{
-                border: '1.5px solid #FF9D16',
+                border: '1px solid #665946',
                 borderRadius: 10,
-                padding: '7px 18px',
-                color: '#FF9D16',
+                padding: '7px 14px',
+                color: '#C7BFB5',
                 fontFamily: 'Inter',
                 fontWeight: 600,
                 fontSize: 13,
-                background: 'rgba(255, 157, 22, 0.08)',
+                background: '#33312D',
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#FF9D16';
-                e.currentTarget.style.color = '#181715';
+                e.currentTarget.style.color = '#FFFFFF';
+                e.currentTarget.style.borderColor = '#FF9D16';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 157, 22, 0.08)';
-                e.currentTarget.style.color = '#FF9D16';
+                e.currentTarget.style.color = '#C7BFB5';
+                e.currentTarget.style.borderColor = '#665946';
               }}
             >
               Sign In
+            </button>
+
+            {/* VIP Register Button */}
+            <button
+              onClick={() => navigate('register')}
+              style={{
+                background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
+                borderRadius: 10,
+                padding: '7px 16px',
+                color: '#181715',
+                fontFamily: 'Inter',
+                fontWeight: 800,
+                fontSize: 13,
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(255, 157, 22, 0.3)',
+              }}
+            >
+              VIP Register
             </button>
           </div>
 
@@ -289,6 +331,8 @@ export default function Navbar({ currentPage, navigate }: NavbarProps) {
           </button>
         </div>
       )}
+
+      <SecurityModal isOpen={securityModalOpen} onClose={() => setSecurityModalOpen(false)} />
     </>
   );
 }

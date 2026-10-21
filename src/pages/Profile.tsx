@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Page, BookingRecord } from '../types';
 import { db } from '../db/database';
 import DynamicQRCode from '../components/DynamicQRCode';
+import { downloadTicketPassImage, downloadQRCodePNG } from '../utils/downloadPass';
 
 interface Props {
   navigate: (page: Page) => void;
@@ -295,13 +296,42 @@ export default function Profile({ navigate }: Props) {
                               background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
                               color: '#181715',
                               borderRadius: 8,
-                              padding: '8px 16px',
+                              padding: '8px 14px',
                               fontFamily: 'Bebas Neue',
                               letterSpacing: '0.05em',
-                              fontSize: 17,
+                              fontSize: 16,
                             }}
                           >
                             VIEW QR PASS
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              downloadTicketPassImage({
+                                movieTitle: b.movieTitle,
+                                theaterName: b.theaterName,
+                                date: b.date,
+                                time: b.time,
+                                format: b.format,
+                                seats: b.seats,
+                                total: b.total,
+                                bookingRef: b.bookingRef,
+                                qrData: b.qrData,
+                              })
+                            }
+                            style={{
+                              background: '#33312D',
+                              border: '1px solid #FF9D16',
+                              color: '#FF9D16',
+                              borderRadius: 8,
+                              padding: '8px 12px',
+                              fontSize: 12,
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                            }}
+                            title="Download official ticket pass PNG"
+                          >
+                            📥 Pass (PNG)
                           </button>
 
                           <button
@@ -410,22 +440,73 @@ export default function Profile({ navigate }: Props) {
               Seats: {selectedTicket.seats.join(', ')} · Total: ${selectedTicket.total}.00
             </p>
 
-            <button
-              onClick={() => window.print()}
-              style={{
-                width: '100%',
-                background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
-                color: '#181715',
-                borderRadius: 10,
-                padding: '12px',
-                fontFamily: 'Bebas Neue',
-                letterSpacing: '0.06em',
-                fontSize: 18,
-                marginTop: 18,
-              }}
-            >
-              PRINT DIGITAL PASS
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 18 }}>
+              <button
+                onClick={() =>
+                  downloadTicketPassImage({
+                    movieTitle: selectedTicket.movieTitle,
+                    theaterName: selectedTicket.theaterName,
+                    date: selectedTicket.date,
+                    time: selectedTicket.time,
+                    format: selectedTicket.format,
+                    seats: selectedTicket.seats,
+                    total: selectedTicket.total,
+                    bookingRef: selectedTicket.bookingRef,
+                    qrData: selectedTicket.qrData,
+                  })
+                }
+                style={{
+                  width: '100%',
+                  background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
+                  color: '#181715',
+                  borderRadius: 10,
+                  padding: '12px',
+                  fontFamily: 'Bebas Neue',
+                  letterSpacing: '0.06em',
+                  fontSize: 18,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(255,157,22,0.4)',
+                }}
+              >
+                📥 DOWNLOAD TICKET PASS (PNG IMAGE)
+              </button>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <button
+                  onClick={() =>
+                    downloadQRCodePNG(selectedTicket.qrData, `cinetix-qr-${selectedTicket.bookingRef}.png`)
+                  }
+                  style={{
+                    background: '#33312D',
+                    border: '1px solid #665946',
+                    color: '#FF9D16',
+                    borderRadius: 8,
+                    padding: '10px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  ⚡ Download QR (PNG)
+                </button>
+
+                <button
+                  onClick={() => window.print()}
+                  style={{
+                    background: '#33312D',
+                    border: '1px solid #665946',
+                    color: '#C7BFB5',
+                    borderRadius: 8,
+                    padding: '10px',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  🖨️ Print / PDF
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

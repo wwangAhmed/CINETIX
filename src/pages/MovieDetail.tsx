@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Movie, Page } from '../types';
 import VideoPlayer from '../components/VideoPlayer';
 import { db } from '../db/database';
+import { downloadAssetImage } from '../utils/downloadPass';
 
 interface Props {
   movie: Movie;
@@ -165,6 +166,30 @@ export default function MovieDetail({ movie, navigate }: Props) {
                   }}
                 >
                   ⚡ 1-TAP QUICK
+                </button>
+
+                <button
+                  onClick={() =>
+                    downloadAssetImage(movie.poster, `${movie.title.replace(/\s+/g, '_')}_Official_Poster.jpg`)
+                  }
+                  style={{
+                    background: '#24221F',
+                    border: '1px solid #665946',
+                    color: '#C7BFB5',
+                    borderRadius: 10,
+                    padding: '12px 20px',
+                    fontFamily: 'Inter',
+                    fontWeight: 600,
+                    fontSize: 13,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                  }}
+                  title="Download Official 4K Movie Poster"
+                >
+                  <span>📥</span>
+                  <span>Poster</span>
                 </button>
               </div>
             </div>
