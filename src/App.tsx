@@ -131,7 +131,9 @@ export default function App() {
         {currentPage === 'confirmed' && (
           <Confirmed movie={movie} bookingState={bookingState} navigate={navigate} addBooking={addBooking} />
         )}
-        {currentPage === 'quick-confirmed' && <QuickConfirmed movie={movie} navigate={navigate} />}
+        {currentPage === 'quick-confirmed' && (
+          <QuickConfirmed movie={movie} bookingState={bookingState} navigate={navigate} />
+        )}
         {currentPage === 'search' && <Search navigate={navigate} />}
         {currentPage === 'offers' && <Offers navigate={navigate} />}
         {currentPage === 'profile' && <Profile navigate={navigate} myBookings={myBookings} />}

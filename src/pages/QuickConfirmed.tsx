@@ -1,20 +1,27 @@
 import { useState } from 'react';
-import type { Movie, Page } from '../types';
+import type { Movie, Page, BookingState } from '../types';
 import DynamicQRCode from '../components/DynamicQRCode';
 import { db } from '../db/database';
 import { downloadTicketPassImage, downloadQRCodePNG } from '../utils/downloadPass';
 
 interface Props {
   movie: Movie;
+  bookingState?: BookingState;
   navigate: (page: Page) => void;
 }
 
-export default function QuickConfirmed({ movie, navigate }: Props) {
+export default function QuickConfirmed({ movie, bookingState, navigate }: Props) {
   const latestBooking = db.getBookings()[0];
-  const refCode = latestBooking?.bookingRef || 'CTX-QUICK-98';
-  const seats = latestBooking?.seats || ['E4', 'E5'];
-  const total = latestBooking?.total || 75;
-  const qrData = latestBooking?.qrData || `CINETIX|${refCode}|${movie.title}|${seats.join(',')}|TOTAL:$${total}|PASS_VALID`;
+  const refCode = bookingState?.bookingRef || latestBooking?.bookingRef || 'CTX-9481';
+  const movieTitle = bookingState?.movieTitle || latestBooking?.movieTitle || movie.title;
+  const moviePoster = bookingState?.moviePoster || latestBooking?.moviePoster || movie.poster;
+  const theaterName = bookingState?.theaterName || latestBooking?.theaterName || 'Cinetix Grand IMAX Downtown';
+  const date = bookingState?.date || latestBooking?.date || 'Today';
+  const time = bookingState?.showtime?.time || latestBooking?.time || '08:00 PM';
+  const format = bookingState?.showtime?.format || latestBooking?.format || 'IMAX 3D Laser';
+  const seats = bookingState?.selectedSeats?.length ? bookingState.selectedSeats : (latestBooking?.seats || ['E4', 'E5']);
+  const total = bookingState?.totalAmount || latestBooking?.total || 75;
+  const qrData = latestBooking?.qrData || `CINETIX|${refCode}|${movieTitle}|${seats.join(',')}|TOTAL:$${total}|PASS_VALID`;
 
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -23,11 +30,11 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
     setDownloading(true);
     try {
       await downloadTicketPassImage({
-        movieTitle: latestBooking?.movieTitle || movie.title,
-        theaterName: latestBooking?.theaterName || 'Cinetix Grand IMAX Downtown',
-        date: latestBooking?.date || 'Today',
-        time: latestBooking?.time || '08:00 PM',
-        format: latestBooking?.format || 'IMAX 3D',
+        movieTitle,
+        theaterName,
+        date,
+        time,
+        format,
         seats,
         total,
         bookingRef: refCode,
@@ -52,15 +59,15 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
         padding: 24,
       }}
     >
-      <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
+      <div style={{ maxWidth: 520, width: '100%', textAlign: 'center' }}>
 
-        {/* Dynamic Gen Z Header */}
+        {/* Dynamic Header */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 52, marginBottom: 8 }}>⚡</div>
           <h1
             style={{
               fontFamily: 'Bebas Neue',
-              fontSize: 44,
+              fontSize: 'clamp(34px, 5vw, 44px)',
               letterSpacing: '0.04em',
               color: '#FFFFFF',
               marginBottom: 6,
@@ -92,18 +99,18 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             background: '#24221F',
             borderRadius: 20,
             padding: 24,
-            border: '1px solid #665946',
+            border: '1.5px solid #FF9D16',
             marginBottom: 20,
-            boxShadow: '0 12px 36px rgba(0,0,0,0.6)',
+            boxShadow: '0 16px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255,157,22,0.2)',
           }}
         >
           <div className="flex gap-4 mb-5 text-left">
             <img
-              src={latestBooking?.moviePoster || movie.poster}
-              alt={latestBooking?.movieTitle || movie.title}
-              style={{ width: 68, height: 96, objectFit: 'cover', borderRadius: 10, border: '1px solid #665946' }}
+              src={moviePoster}
+              alt={movieTitle}
+              style={{ width: 72, height: 104, objectFit: 'cover', borderRadius: 10, border: '1px solid #665946' }}
             />
-            <div>
+            <div style={{ flex: 1 }}>
               <span
                 style={{
                   background: 'rgba(255, 157, 22, 0.15)',
@@ -115,24 +122,25 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
                   borderRadius: 4,
                 }}
               >
-                {latestBooking?.format || 'IMAX 3D'}
+                {format}
               </span>
               <h3
                 style={{
                   fontFamily: 'Bebas Neue',
                   color: '#FFFFFF',
-                  fontSize: 22,
+                  fontSize: 24,
                   marginTop: 4,
                   letterSpacing: '0.04em',
+                  marginBottom: 2,
                 }}
               >
-                {latestBooking?.movieTitle || movie.title}
+                {movieTitle}
               </h3>
               <p style={{ color: '#C7BFB5', fontSize: 13 }}>
-                {latestBooking?.theaterName || 'Cinetix Grand IMAX Downtown'}
+                {theaterName}
               </p>
-              <p style={{ color: '#99784B', fontSize: 12, marginTop: 2 }}>
-                {latestBooking?.date || 'Today'} · {latestBooking?.time || '08:00 PM'}
+              <p style={{ color: '#99784B', fontSize: 12, marginTop: 2, fontWeight: 700 }}>
+                {date} · {time}
               </p>
             </div>
           </div>
@@ -160,8 +168,8 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             </div>
             <div style={{ textAlign: 'right' }}>
               <p style={{ color: '#99784B', fontSize: 11, fontWeight: 700 }}>PAID TOTAL</p>
-              <p style={{ color: '#22C55E', fontWeight: 800, fontSize: 20, fontFamily: 'Inter' }}>
-                ${total}.00
+              <p style={{ color: '#22C55E', fontWeight: 800, fontSize: 22, fontFamily: 'Inter' }}>
+                ${total}.00 ✓
               </p>
             </div>
           </div>
@@ -177,9 +185,9 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
               gap: 8,
             }}
           >
-            <DynamicQRCode data={qrData} size={135} showScanBeam={true} />
-            <p style={{ color: '#99784B', fontSize: 10, letterSpacing: 2, textTransform: 'uppercase' }}>
-              GATE ENTRY BARCODE & QR READY
+            <DynamicQRCode data={qrData} size={145} showScanBeam={true} />
+            <p style={{ color: '#22C55E', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 800 }}>
+              ● GATE PODIUM PASS ACTIVE & READY
             </p>
           </div>
         </div>
@@ -193,7 +201,7 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             background: 'linear-gradient(135deg, #FF9D16, #CC903B)',
             color: '#181715',
             borderRadius: 12,
-            padding: 14,
+            padding: 15,
             fontFamily: 'Bebas Neue',
             letterSpacing: '0.06em',
             fontSize: 20,
@@ -240,7 +248,7 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
         </div>
 
         <button
-          onClick={() => navigate('home')}
+          onClick={() => navigate('profile')}
           style={{
             width: '100%',
             background: '#24221F',
@@ -252,9 +260,23 @@ export default function QuickConfirmed({ movie, navigate }: Props) {
             fontWeight: 600,
             fontSize: 14,
             cursor: 'pointer',
+            marginBottom: 8,
           }}
         >
-          Done & Return to Cinema Home →
+          🎟 View All My Bookings in Profile →
+        </button>
+
+        <button
+          onClick={() => navigate('home')}
+          style={{
+            color: '#99784B',
+            fontSize: 13,
+            background: 'none',
+            cursor: 'pointer',
+            padding: 6,
+          }}
+        >
+          ← Return to Cinema Home
         </button>
       </div>
     </div>
