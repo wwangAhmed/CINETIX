@@ -103,20 +103,20 @@ input, select, textarea {
 
 /* ── Layout & Containers ── */
 .max-container {
-  max-width: 1440px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 80px;
+  padding: 0 32px;
 }
 
 /* Responsive padding */
 @media (max-width: 1024px) {
   .max-container {
-    padding: 0 40px;
+    padding: 0 24px;
   }
 }
 @media (max-width: 768px) {
   .max-container {
-    padding: 0 20px;
+    padding: 0 16px;
   }
 }
 

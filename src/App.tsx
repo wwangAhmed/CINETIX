@@ -3,7 +3,6 @@ import type { Page, BookingState, BookingRecord } from './types';
 import { db } from './db/database';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import QuickBookingBar from './components/QuickBookingBar';
 import BottomTabBar from './components/BottomTabBar';
 import CinemaLoader from './components/CinemaLoader';
 import Login from './pages/Login';
@@ -95,7 +94,6 @@ export default function App() {
   const showNavbar = NAVBAR_PAGES.includes(currentPage);
   const showFooter = FOOTER_PAGES.includes(currentPage);
   const showBottomTab = BOTTOM_TAB_PAGES.includes(currentPage);
-  const showQuickBar = currentPage === 'home';
 
   return (
     <div
@@ -111,19 +109,14 @@ export default function App() {
       <main
         style={{
           opacity: transitioning ? 0 : 1,
-          transform: transitioning ? 'translateY(8px)' : 'translateY(0)',
+          transform: transitioning ? 'translateY(6px)' : 'translateY(0)',
           transition: 'opacity 0.18s ease, transform 0.18s ease',
         }}
       >
         {currentPage === 'login' && <Login navigate={navigate} />}
         {currentPage === 'register' && <Register navigate={navigate} />}
         {currentPage === 'otp' && <Otp navigate={navigate} />}
-        {currentPage === 'home' && (
-          <>
-            {showQuickBar && <QuickBookingBar navigate={navigate} />}
-            <Home movie={movie} navigate={navigate} />
-          </>
-        )}
+        {currentPage === 'home' && <Home movie={movie} navigate={navigate} />}
         {currentPage === 'movie-detail' && <MovieDetail movie={movie} navigate={navigate} />}
         {currentPage === 'booking' && <Booking movie={movie} bookingState={bookingState} navigate={navigate} />}
         {currentPage === 'seat-selection' && (
