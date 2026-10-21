@@ -25,6 +25,8 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
 
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [qrDownloading, setQrDownloading] = useState(false);
+  const [walletAdded, setWalletAdded] = useState(false);
 
   const handleDownloadPass = async () => {
     setDownloading(true);
@@ -48,6 +50,17 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
     }
   };
 
+  const handleDownloadQR = async () => {
+    setQrDownloading(true);
+    try {
+      await downloadQRCodePNG(qrData, `cinetix-qr-${refCode}.png`, 400);
+    } catch {
+      window.print();
+    } finally {
+      setQrDownloading(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -56,24 +69,24 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 24,
+        padding: '84px 20px 40px',
       }}
     >
-      <div style={{ maxWidth: 520, width: '100%', textAlign: 'center' }}>
+      <div style={{ maxWidth: 540, width: '100%', textAlign: 'center' }}>
 
         {/* Dynamic Header */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 52, marginBottom: 8 }}>⚡</div>
+        <div style={{ marginBottom: 22 }}>
+          <div style={{ fontSize: 48, marginBottom: 6 }}>🎟️</div>
           <h1
             style={{
               fontFamily: 'Bebas Neue',
-              fontSize: 'clamp(34px, 5vw, 44px)',
+              fontSize: 'clamp(32px, 5vw, 42px)',
               letterSpacing: '0.04em',
               color: '#FFFFFF',
               marginBottom: 6,
             }}
           >
-            YOU'RE IN — 1-TAP SECURED!
+            PAYMENT CONFIRMED — TICKET IN QR FORMAT
           </h1>
           <div
             style={{
@@ -85,7 +98,7 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
             }}
           >
             <span style={{ color: '#181715', fontWeight: 800, fontSize: 13 }}>
-              Secured prime seats in 0.4s with 256-Bit Vault ⚡
+              ✓ Bank Transfer Verified · Cinema Gate Entry Pass Active
             </span>
           </div>
           <p style={{ color: '#C7BFB5', fontSize: 13 }}>
@@ -174,20 +187,32 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
             </div>
           </div>
 
-          {/* Dynamic QR Code */}
+          {/* Dynamic Ticket in QR Format Box */}
           <div
             style={{
-              borderTop: '1px dashed #665946',
-              paddingTop: 16,
+              background: '#181715',
+              borderRadius: 14,
+              padding: '18px 16px',
+              border: '1px solid #FF9D16',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               gap: 8,
+              boxShadow: 'inset 0 0 15px rgba(255, 157, 22, 0.1)',
             }}
           >
-            <DynamicQRCode data={qrData} size={145} showScanBeam={true} />
-            <p style={{ color: '#22C55E', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 800 }}>
-              ● GATE PODIUM PASS ACTIVE & READY
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E' }} />
+              <span style={{ color: '#22C55E', fontSize: 11, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                DIGITAL CINEMA ADMISSION PASS (QR FORMAT)
+              </span>
+            </div>
+            <DynamicQRCode data={qrData} size={165} showScanBeam={true} />
+            <p style={{ color: '#FF9D16', fontSize: 12, fontWeight: 700, letterSpacing: '0.04em' }}>
+              ● GATE TURNSTILE & PODIUM SCANNER READY
+            </p>
+            <p style={{ color: '#C7BFB5', fontSize: 11 }}>
+              Present this QR code on your mobile or download high-res pass below
             </p>
           </div>
         </div>
@@ -205,45 +230,47 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
             fontFamily: 'Bebas Neue',
             letterSpacing: '0.06em',
             fontSize: 20,
-            marginBottom: 12,
             cursor: downloading ? 'wait' : 'pointer',
-            boxShadow: '0 4px 16px rgba(255, 157, 22, 0.4)',
+            marginBottom: 10,
+            boxShadow: '0 8px 24px rgba(255, 157, 22, 0.35)',
+            border: 'none',
           }}
         >
-          {downloading ? 'GENERATING HIGH-RES PASS...' : downloaded ? 'PASS SAVED TO DOWNLOADS ✓' : '📥 DOWNLOAD DIGITAL PASS (PNG) →'}
+          {downloading ? 'RENDERING HIGH-RES PASS...' : downloaded ? '✓ TICKET PASS DOWNLOADED (PNG)!' : '📥 DOWNLOAD TICKET PASS (PNG)'}
         </button>
 
-        {/* Secondary Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-2.5 mb-3">
           <button
-            onClick={() => downloadQRCodePNG(qrData, `cinetix-qr-${refCode}.png`)}
+            onClick={handleDownloadQR}
+            disabled={qrDownloading}
             style={{
               background: '#33312D',
-              border: '1px solid #665946',
               color: '#FF9D16',
-              borderRadius: 12,
-              padding: '12px',
+              border: '1px solid #FF9D16',
+              borderRadius: 10,
+              padding: 12,
               fontWeight: 700,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: qrDownloading ? 'wait' : 'pointer',
             }}
           >
-            ⚡ Save QR (PNG)
+            {qrDownloading ? 'Saving...' : '⚡ Download QR (PNG)'}
           </button>
+
           <button
-            onClick={() => window.print()}
+            onClick={() => setWalletAdded(true)}
             style={{
-              background: '#33312D',
-              border: '1px solid #665946',
-              color: '#FFFFFF',
-              borderRadius: 12,
-              padding: '12px',
+              background: walletAdded ? '#22C55E' : '#33312D',
+              color: walletAdded ? '#181715' : '#C7BFB5',
+              border: '1px solid #4D473F',
+              borderRadius: 10,
+              padding: 12,
               fontWeight: 700,
               fontSize: 13,
               cursor: 'pointer',
             }}
           >
-            🖨️ Print / PDF
+            {walletAdded ? '✓ Added to Wallet!' : '📱 Add to Wallet'}
           </button>
         </div>
 
@@ -252,11 +279,10 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
           style={{
             width: '100%',
             background: '#24221F',
+            color: '#FFFFFF',
             border: '1px solid #665946',
-            color: '#C7BFB5',
-            borderRadius: 12,
+            borderRadius: 10,
             padding: 12,
-            fontFamily: 'Inter',
             fontWeight: 600,
             fontSize: 14,
             cursor: 'pointer',
@@ -272,6 +298,7 @@ export default function QuickConfirmed({ movie, bookingState, navigate }: Props)
             color: '#99784B',
             fontSize: 13,
             background: 'none',
+            border: 'none',
             cursor: 'pointer',
             padding: 6,
           }}

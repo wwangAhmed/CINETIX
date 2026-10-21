@@ -1,7 +1,11 @@
 {
-  "description": "Streamline cinema ticket booking with responsive design, interactive seat selection, food add-ons, secure payment, and instant QR code confirmation.",
+  "title": "CINETIX — Luxury IMAX & VIP Cinema Experience",
+  "description": "CINETIX — World-Class Luxury Cinema with IMAX 3D Laser, Dolby Atmos 64-Channel Audio, and Artisanal VIP Recliner Dining.",
+  "icons": {
+    "icon": "/favicon.svg"
+  },
   "robots": {
-    "index": false
+    "index": true
   },
   "accessibility": {
     "addBypassLinks": false,

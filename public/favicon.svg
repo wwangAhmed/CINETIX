@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="cinetixGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9D16"/>
+      <stop offset="50%" stop-color="#CC903B"/>
+      <stop offset="100%" stop-color="#99784B"/>
+    </linearGradient>
+    <linearGradient id="goldGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFBF47"/>
+      <stop offset="100%" stop-color="#E58500"/>
+    </linearGradient>
+    <radialGradient id="lensReflect" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFD68A" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#FF9D16" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#181715" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Obsidian Background Squircle -->
+  <rect width="64" height="64" rx="16" fill="#181715"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" stroke="url(#cinetixGold)" stroke-width="1.5" stroke-opacity="0.7"/>
+
+  <!-- Cinema Projector Aperture -->
+  <g transform="translate(10, 10)">
+    <!-- Lens Rim -->
+    <circle cx="22" cy="22" r="20" stroke="url(#cinetixGold)" stroke-width="2.5" fill="#24221F"/>
+    <circle cx="22" cy="22" r="16" fill="url(#lensReflect)"/>
+
+    <!-- Dynamic Cinema Aperture Blades -->
+    <path d="M22 6 L30 18 L24 15 Z" fill="#FF9D16"/>
+    <path d="M38 22 L26 30 L29 24 Z" fill="#CC903B"/>
+    <path d="M22 38 L14 26 L20 29 Z" fill="#99784B"/>
+    <path d="M6 22 L18 14 L15 20 Z" fill="#FFBF47"/>
+
+    <!-- Central High-Intensity Cinema Laser Core -->
+    <circle cx="22" cy="22" r="7" fill="url(#goldGlow)"/>
+    <circle cx="22" cy="22" r="3" fill="#FFFFFF"/>
+  </g>
+</svg>
